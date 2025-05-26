@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>ATM Login</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to bottom right, #0047ab, #001f5c);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    #loginForm {
+      background-color: white;
+      color: #002b5c;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      width: 320px;
+    }
+
+    #loginForm h2 {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    input[type="number"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 20px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #0047ab;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #003080;
+    }
+  </style>
+</head>
+<body>
+  <form id="loginForm">
+    <h2>ReachISO ATM Login</h2>
+    <label for="pin">Enter PIN:</label>
+    <input type="number" id="pin" required>
+    <button type="submit">Login</button>
+  </form>
+  <script>
+    document.getElementById("loginForm").addEventListener("submit", async function(e) {
+      e.preventDefault();
+      const pin = document.getElementById("pin").value;
+      const response = await fetch(`/atm/login?pin=${pin}`, { method: "POST" });
+      const data = await response.json();
+      if (data && data.id) {
+        localStorage.setItem("userId", data.id);
+        window.location.href = "dashboard.html";
+      } else {
+        alert("Login failed!");
+      }
+    });
+  </script>
+</body>
+</html>

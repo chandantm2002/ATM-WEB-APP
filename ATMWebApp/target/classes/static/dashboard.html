@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>ATM Dashboard</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to right, #0047ab, #001f5c);
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background-color: #ffffff;
+      color: #001f5c;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+      width: 400px;
+      text-align: center;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      background-color: #0047ab;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #003080;
+    }
+
+    input[type="number"] {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    #balance {
+      margin-top: 10px;
+      font-weight: bold;
+      color: green;
+    }
+
+    .logout-btn {
+      background-color: #944fd9;
+    }
+
+    .logout-btn:hover {
+      background-color: #c9302c;
+    }
+  </style>
+  <script>
+    // 🔐 Authentication check
+	window.onload = function () {
+	    const userId = localStorage.getItem("userId");
+	    if (!userId) {
+	      window.location.href = "index.html"; // redirect to login page
+	    }
+  </script>
+</head>
+<body>
+  <div class="container">
+    <h2>Welcome to ReachISO ATM</h2>
+    
+    <button onclick="checkBalance()">Check Balance</button>
+    <div id="balance"></div>
+
+    <h3>Deposit</h3>
+    <input type="number" id="depositAmount" placeholder="Enter amount">
+    <button onclick="deposit()">Deposit</button>
+
+    <h3>Withdraw</h3>
+    <input type="number" id="withdrawAmount" placeholder="Enter amount">
+    <button onclick="withdraw()">Withdraw</button>
+
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </div>
+
+  <script>
+    async function checkBalance() {
+      const res = await fetch(`/atm/${userId}/balance`);
+      const balance = await res.text();
+      document.getElementById("balance").innerText = "Balance: ₹" + balance;
+    }
+
+    async function deposit() {
+      const amount = document.getElementById("depositAmount").value;
+      const res = await fetch(`/atm/${userId}/deposit?amount=${amount}`, { method: "POST" });
+      const result = await res.text();
+      alert(result);
+      checkBalance();
+    }
+
+    async function withdraw() {
+      const amount = document.getElementById("withdrawAmount").value;
+      const res = await fetch(`/atm/${userId}/withdraw?amount=${amount}`, { method: "POST" });
+      const result = await res.text();
+      alert(result);
+      checkBalance();
+    }
+
+    function logout() {
+      localStorage.removeItem("userId");
+      window.location.href = "index.html"; // back to login page
+    }
+  </script>
+</body>
+</html>
